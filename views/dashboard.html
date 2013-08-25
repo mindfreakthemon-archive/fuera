@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="map-canvas"></div>
+<div id="geodecode-div" class="well">
+	<h3>Search for location</h3>
+	<p>
+		Search for your location so <br />
+		it could be shown on the map.
+	</p>
+	<input type="text" id="geodecode" class="typeahead" />
+	<h3>My location</h3>
+	<p>
+		Click anywhere on the map to set.<br />
+		To unset <a href="javascript://" id="unset-location">click here</a>.
+	</p>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="//maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_KEY }}&sensor=false"></script>
+<script src="/static/lib/typeahead.js/typeahead.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}

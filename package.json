@@ -1,0 +1,38 @@
+{
+  "name": "middle-of-nowhere",
+  "author": "Monday Freelem <mfthemon@gmail.com>",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node server"
+  },
+  "dependencies": {
+    "express.io": "1.1.12",
+    "socket.io": "0.9.16",
+    "express-mailer": "0.2.0",
+    "less": "1.4.2",
+    "less-middleware": "*",
+    "node-uuid": "*",
+    "redis": "*",
+    "consolidate": "~0.9.1",
+    "swig": "0.14.0",
+    "nconf": "0.6.7",
+    "connect-ensure-login": "~0.1.1",
+    "connect-roles": "~2.1.0",
+    "passport": "0.1.17",
+    "passport-imgur": "0.0.2",
+    "nohm": "0.9.4",
+    "generic-pool": "2.0.4",
+    "connect-flash": "0.1.1",
+    "passport.socketio": "~1.2.1"
+  },
+  "devDependencies": {
+    "vows": "*",
+    "mocha": "*",
+    "should": "*"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.2.x"
+  }
+}

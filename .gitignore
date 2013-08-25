@@ -6,9 +6,15 @@ lib-cov
 *.out
 *.pid
 *.gz
+*.rdb
+.env
 
 pids
 logs
 results
 
 npm-debug.log
+
+config.json
+node_modules/
+static/css/
