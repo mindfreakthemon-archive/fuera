@@ -1,19 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div id="map-canvas"></div>
+<div id="map-canvas" data-lat="{{ user.p('lat') }}" data-lng="{{ user.p('lng') }}"></div>
 <div id="geodecode-div" class="well">
-	<h3>Search for location</h3>
-	<p>
-		Search for your location so <br />
-		it could be shown on the map.
-	</p>
-	<input type="text" id="geodecode" class="typeahead" />
-	<h3>My location</h3>
-	<p>
-		Click anywhere on the map to set.<br />
-		To unset <a href="javascript://" id="unset-location">click here</a>.
-	</p>
+	<form class="form-horizontal">
+		<div class="form-group">
+			<label for="geodecode">Search for location</label>
+			<input type="text" id="geodecode" class="typeahead form-control" />
+		</div>
+	</form>
 </div>
 {% endblock %}
 

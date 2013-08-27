@@ -1,13 +1,8 @@
 var mw = require('../lib/middlewares.js'),
 	app = require('../lib/app'),
 	nohm = require('nohm').Nohm,
+	request = require('request'),
 	models = nohm.getModels();
-
-var User = models.User;
-
-exports.dashboard = function (req, res) {
-	res.render('dashboard');
-};
 
 exports.profile = function (req, res) {
 	res.render('profile');
@@ -24,14 +19,49 @@ exports.erase = function (req, res) {
 	});
 };
 
+exports.selfie = function (req, res) {
+	req.user.getAll('ProviderUser', 'default', function (error, ids) {
+		ids.forEach(function (id) {
+			var providerUser = models.ProviderUser.load(id, function (error) {
+				if (providerUser.p('name') == 'imgur') {
+					// @TODO redo this shit
+					providerUser.refreshAccessToken(function (error) {
+						request.get({
+							url: 'https://api.imgur.com/3/account/me/images/',
+							headers: {
+								'Authorization': 'Bearer ' + providerUser.p('accessToken')
+							},
+							json:true
+						}, function (error, response, body) {
+							var images = [];
 
-app.get('/', mw.soft.user, exports.dashboard);
+							body.data.forEach(function (val) {
+								if (val.nsfw) {
+									return;
+								}
+
+								var thumb = val.link.split('.');
+								thumb[thumb.length - 2] += 's';
+								val.extension = thumb[thumb.length - 1];
+								val.thumb = thumb.join('.');
+
+								images.push(val);
+							});
+
+							res.render('selfie', { images: images });
+						});
+					});
+				}
+			});
+		});
+	});
+};
+
 app.all('/account/*', mw.hard.user);
-app.get('/account/dashboard', exports.dashboard);
 app.get('/account/profile', exports.profile);
+app.get('/account/selfie', exports.selfie);
 app.get('/account/logout', exports.logout);
 app.get('/account/erase', exports.erase);
-
 
 app.io.route('ready', function (req) {
 	req.io.join(req.handshake.user.id);
@@ -65,7 +95,7 @@ app.io.route('location', {
 			});
 
 			req.io.room(user.id).broadcast('location:set', req.data);
-			req.io.broadcast('map:update', user.allProperties());
+			req.io.broadcast('map:update', user.values());
 		});
 	},
 	unset: function (req) {
@@ -88,30 +118,18 @@ app.io.route('location', {
 	}
 });
 
-app.io.route('map', {
-	find: function (req) {
-		User.findAndLoad({
-			lat: {
-				min: req.data.lat_lo,
-				max: req.data.lat_hi
-			},
-			lng: {
-				min: req.data.lng_lo,
-				max: req.data.lng_hi
-			}
-		}, function (err, users) {
-			var array = [];
 
-			users.forEach(function (user) {
-				if (user.id !== req.handshake.user.id) {
-					array.push(user.allProperties());
-				}
-			});
+app.io.route('profile', {
+	save: function (req) {
+		var user = req.handshake.user;
 
+		user.p(req.data);
+
+		user.save(function (err) {
 			req.io.respond({
-				error: err,
-				users: array
+				error: err
 			});
+			req.io.broadcast('map:update', user.values());
 		});
 	}
 });

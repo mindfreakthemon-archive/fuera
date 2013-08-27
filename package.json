@@ -24,7 +24,8 @@
     "nohm": "0.9.4",
     "generic-pool": "2.0.4",
     "connect-flash": "0.1.1",
-    "passport.socketio": "~1.2.1"
+    "passport.socketio": "~1.2.1",
+    "request": "~2.27.0"
   },
   "devDependencies": {
     "vows": "*",

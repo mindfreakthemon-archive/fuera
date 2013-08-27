@@ -1,1 +1,95 @@
 {% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12">
+			<div id="profile-details" class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Profile</h3>
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-xs-3" id="selfie">
+							{% if user.selfie() %}
+							<img src="{{ user.selfie() }}" class="img-thumbnail img-responsive" />
+							{% else %}
+							<img data-src="holder.js/160x160" class="img-thumbnail img-responsive" />
+							{% endif %}
+						</div>
+						<div class="col-xs-8">
+							<form class="form-horizontal">
+								<div class="form-group">
+									<label class="col-xs-3 control-label">Username</label>
+									<div class="col-xs-8">
+										<p class="form-control-static">{{ user.p('username') }}</p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-3 control-label" for="first-name">First name</label>
+									<div class="col-xs-8">
+										<input type="text" class="form-control" id="first-name" name="first_name" maxlength="20" placeholder="Anonymous" value="{{ user.p('first_name') }}" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-3 control-label" for="email">Email</label>
+									<div class="col-xs-8">
+										<input type="email" class="form-control" id="email" name="email" maxlength="40" placeholder="hello@example.org"  value="{{ user.p('email') }}" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-3 control-label">Whoami</label>
+									<div class="col-xs-8">
+										<select class="form-control" id="type" name="type" data-value="{{ user.p('type') }}">
+											<option value="unknown">Unknown</option>
+											<option value="guy">Guy</option>
+											<option value="gal">Gal</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-3 control-label">Selfie</label>
+									<div class="col-xs-8">
+										<p class="form-control-static"><a href="/account/selfie/" data-toggle="modal" data-target="#images">select from imgur images</a></p>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="profile-location" class="panel panel-default">
+				<div class="panel-heading">
+					<h3 class="panel-title">Location</h3>
+				</div>
+				<div class="panel-body">
+					<div class="form-horizontal">
+						<div class="form-group">
+							<label class="col-xs-5 control-label" for="location-search">Search for location</label>
+							<div class="col-xs-4">
+								<input type="text" class="form-control" name="first_name" id="location-search" />
+							</div>
+							<div class="col-xs-3 text-right">
+								<a href="javascript://" id="unset-location" class="btn btn-default form-control-static">unset my location</a>
+							</div>
+						</div>
+					</div>
+					<div class="alert alert-info">
+						To set your location click anywhere on the map. Use search field to find your location on the map.
+					</div>
+					<div id="map-profile"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal fade" id="images" tabindex="-1"></div>
+{% endblock %}
+
+{% block js %}
+<script src="//maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_KEY }}&sensor=false"></script>
+<script src="/static/lib/typeahead.js/typeahead.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/nohm/validations.js"></script>
+<script src="/static/js/profile.js"></script>
+{% endblock %}

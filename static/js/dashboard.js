@@ -1,6 +1,8 @@
 jQuery(function ($) {
-	var map = window.map = new google.maps.Map(document.getElementById("map-canvas"), {
-		center: new google.maps.LatLng('79.828898', '80.8656143'),
+	var $map = $("#map-canvas");
+
+	var map = window.map = new google.maps.Map($map[0], {
+		center: new google.maps.LatLng($map.data('lat') || '79.828898', $map.data('lng') || '80.8656143'),
 		zoom: 8,
 		streetViewControl: false,
 		minZoom: 6,
@@ -11,45 +13,7 @@ jQuery(function ($) {
 	map.home = null;
 	map.markers = [];
 	map.user_markers = {};
-
-//	navigator.geolocation.getCurrentPosition(function (position) {
-//		map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
-//	}, function (error) {
-//		console.info(function (error) {
-//			switch (error.code) {
-//				case error.PERMISSION_DENIED:
-//					return "User denied the request for Geolocation.";
-//				case error.POSITION_UNAVAILABLE:
-//					return "Location information is unavailable.";
-//				case error.TIMEOUT:
-//					return "The request to get user location timed out.";
-//				case error.UNKNOWN_ERROR:
-//					return "An unknown error occurred.";
-//				default:
-//					return "LOL!";
-//			}
-//		} (error));
-//	});
 });
-
-function unsetHomeMarker() {
-	if (map.home) {
-		map.home.setMap(null);
-	}
-}
-
-function replaceHomeMarker() {
-	var map = window.map,
-		location = new google.maps.LatLng(map.user.lat, map.user.lng);
-
-	unsetHomeMarker();
-
-	map.home = new google.maps.Marker({
-		position: location,
-		map: map,
-		icon: '/static/img/home.png'
-	});
-}
 
 function clearUserMarkers() {
 	var map = window.map;
@@ -84,13 +48,24 @@ function addUserMarker(user) {
 	var marker = new google.maps.Marker({
 		position: location,
 		map: map,
-		icon: '/static/img/male.png',
+		icon: '/static/img/' + user.type + '.png',
 		title: user.username
 	});
 
 	var infoWindow = new google.maps.InfoWindow({
-		content: '<h4>' + user.username + '</h4>' +
-			'<p><a href="http://imgur.com/user/' + user.username + '">Gallery profile</a></p>'
+		content: '<div class="media">' +
+			(user.selfie ?
+			'<a class="pull-left">' +
+			'<img class="media-object" src="' + user.selfie + '">' +
+			'</a>' : '') +
+			'<div class="media-body">' +
+			'<h4 class="media-heading">' +
+			(user.first_name ?
+				user.first_name + ' (' + user.username + ')' :
+				user.username) + '</h4>' +
+			'<p><a href="http://imgur.com/user/' + user.username + '">Gallery profile</a></p>' +
+			'</div>' +
+			'</div>'
 	});
 
 	google.maps.event.addListener(marker, 'click', function() {
@@ -104,30 +79,6 @@ function addUserMarker(user) {
 jQuery(function ($) {
 	var socket = window.socket = io.connect(location.protocol + '//' + location.host + '/'),
 		map = window.map;
-
-	socket.emit('ready');
-
-	// get stored location
-	socket.emit('location:get', {}, function (data) {
-		if (data) {
-			map.user = data;
-			replaceHomeMarker();
-
-			map.setCenter(new google.maps.LatLng(map.user.lat, map.user.lng));
-		}
-	});
-
-	// listen on change
-	socket.on('location:set', function (data) {
-		map.user = data;
-		replaceHomeMarker();
-	});
-
-	// listen on unset
-	socket.on('location:unset', function () {
-		map.user = null;
-		unsetHomeMarker();
-	});
 
 	// someone changed something
 	socket.on('map:update', function (user) {
@@ -145,14 +96,8 @@ jQuery(function ($) {
 });
 
 jQuery(function ($) {
-	var $body = $(document.body),
-		map = window.map,
+	var map = window.map,
 		socket = window.socket;
-
-	$body.on('click', '[data-map="set-center"]', function () {
-		var $this = $(this);
-		map.setCenter($this.data('lat'))
-	});
 
 	$("#geodecode")
 		.typeahead({
@@ -196,24 +141,6 @@ jQuery(function ($) {
 					break;
 			}
 		});
-
-	google.maps.event.addListener(map, 'click', function (event) {
-		var location = event.latLng;
-
-		map.user = {
-			lat: location.lat(),
-			lng: location.lng()
-		};
-		replaceHomeMarker();
-
-		socket.emit('location:set', map.user);
-	});
-
-	$("#unset-location").on('click', function () {
-		unsetHomeMarker();
-
-		socket.emit('location:unset');
-	});
 
 	function boundsChanged() {
 		var mapBounds = map.getBounds(),
