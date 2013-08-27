@@ -3,15 +3,15 @@ var mw = require('../lib/middlewares'),
 
 
 exports.index = function (req, res) {
-	res.render('index');
+	res.render('index',{ title: 'Fuera' });
 };
 
 exports.privacy = function (req, res) {
-	res.render('privacy');
+	res.render('privacy', { title: 'Fuera - Privacy policy' });
 };
 
 exports.terms = function (req, res) {
-	res.render('terms');
+	res.render('terms', { title: 'Fuera - Terms and conditions' });
 };
 
 app.get('/', mw.soft.anon, exports.index);

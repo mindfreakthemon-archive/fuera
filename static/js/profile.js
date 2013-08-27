@@ -157,7 +157,7 @@ jQuery(function ($) {
 		}, 3000);
 	}
 
-	$("#first-name, #email, #type")
+	$("#first-name, #type")
 		.on('change', function () {
 			if (this.checkValidity()) {
 				var kwargs = {},

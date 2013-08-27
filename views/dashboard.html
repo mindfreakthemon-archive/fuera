@@ -3,6 +3,11 @@
 {% block content %}
 <div id="map-canvas" data-lat="{{ user.p('lat') }}" data-lng="{{ user.p('lng') }}"></div>
 <div id="geodecode-div" class="well">
+	{% set coords = user.p('coords') %}
+	{% if !coords %}
+	<h5>Looks like you haven't setup your profile yet!</h5>
+	<a href="/account/profile/" class="btn btn-default">Setup profile</a><br /><br />
+	{% endif %}
 	<form class="form-horizontal">
 		<div class="form-group">
 			<label for="geodecode">Search for location</label>

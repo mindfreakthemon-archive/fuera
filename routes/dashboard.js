@@ -6,11 +6,11 @@ var mw = require('../lib/middlewares.js'),
 var User = models.User;
 
 exports.dashboard = function (req, res) {
-	res.render('dashboard');
+	res.render('dashboard', { title: 'Fuera - Map' });
 };
 
 app.get('/', mw.soft.user, exports.dashboard);
-app.get('/dashboard', exports.dashboard);
+app.get('/dashboard', mw.hard.user, exports.dashboard);
 
 app.io.route('map', {
 	find: function (req) {
@@ -27,7 +27,9 @@ app.io.route('map', {
 			var array = [];
 
 			users.forEach(function (user) {
-				array.push(user.values());
+				if (user.p('coords')) {
+					array.push(user.values());
+				}
 			});
 
 			req.io.respond({

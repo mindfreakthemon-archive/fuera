@@ -2,10 +2,10 @@ jQuery(function ($) {
 	var $map = $("#map-canvas");
 
 	var map = window.map = new google.maps.Map($map[0], {
-		center: new google.maps.LatLng($map.data('lat') || '79.828898', $map.data('lng') || '80.8656143'),
+		center: new google.maps.LatLng($map.data('lat') || '51.5121612', $map.data('lng') || '0.1208496'),
 		zoom: 8,
 		streetViewControl: false,
-		minZoom: 6,
+		minZoom: 4,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	});
 
@@ -63,7 +63,7 @@ function addUserMarker(user) {
 			(user.first_name ?
 				user.first_name + ' (' + user.username + ')' :
 				user.username) + '</h4>' +
-			'<p><a href="http://imgur.com/user/' + user.username + '">Gallery profile</a></p>' +
+			'<p><a href="http://imgur.com/user/' + user.username + '" target="_blank">Imgur gallery profile</a></p>' +
 			'</div>' +
 			'</div>'
 	});

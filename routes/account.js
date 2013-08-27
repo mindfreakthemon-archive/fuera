@@ -5,7 +5,7 @@ var mw = require('../lib/middlewares.js'),
 	models = nohm.getModels();
 
 exports.profile = function (req, res) {
-	res.render('profile');
+	res.render('profile', { title: 'Fuera - Profile' });
 };
 
 exports.logout = function (req, res) {
