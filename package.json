@@ -17,7 +17,6 @@
     "passport": "0.1.17",
     "passport-imgur": "0.0.2",
     "nohm": "0.9.4",
-    "generic-pool": "2.0.4",
     "passport.socketio": "1.2.1",
     "request": "2.27.0",
     "async-mini": "0.2.0"
