@@ -20,38 +20,43 @@ exports.erase = function (req, res) {
 };
 
 exports.selfie = function (req, res) {
-	req.user.getAll('ProviderUser', 'default', function (error, ids) {
-		ids.forEach(function (id) {
-			var providerUser = models.ProviderUser.load(id, function (error) {
-				if (providerUser.p('name') == 'imgur') {
-					// @TODO redo this shit
-					providerUser.refreshAccessToken(function (error) {
-						request.get({
-							url: 'https://api.imgur.com/3/account/me/images/',
-							headers: {
-								'Authorization': 'Bearer ' + providerUser.p('accessToken')
-							},
-							json:true
-						}, function (error, response, body) {
-							var images = [];
+	req.user.providers(function (error, providerUsers) {
+		providerUsers.forEach(function (providerUser) {
+			if (providerUser.p('name') !== 'imgur') {
+				return;
+			}
 
-							body.data.forEach(function (val) {
-								if (val.nsfw) {
-									return;
-								}
+			req.clearTimeout();
 
-								var thumb = val.link.split('.');
-								thumb[thumb.length - 2] += 's';
-								val.extension = thumb[thumb.length - 1];
-								val.thumb = thumb.join('.');
+			// @TODO redo this shit
+			providerUser.refreshAccessToken(function (error) {
+				request.get({
+					url: 'https://api.imgur.com/3/account/me/images/',
+					headers: {
+						'Authorization': 'Bearer ' + providerUser.p('accessToken')
+					},
+					timeout: 10000,
+					json: true
+				}, function (error, response, body) {
+					var images = [];
 
-								images.push(val);
-							});
+					if (!error) {
+						body.data.forEach(function (val) {
+							if (val.nsfw) {
+								return;
+							}
 
-							res.render('selfie', { images: images });
+							var thumb = val.link.split('.');
+							thumb[thumb.length - 2] += 's';
+							val.extension = thumb[thumb.length - 1];
+							val.thumb = thumb.join('.');
+
+							images.push(val);
 						});
-					});
-				}
+					}
+
+					res.render('selfie', { images: images });
+				});
 			});
 		});
 	});
