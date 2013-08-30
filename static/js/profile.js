@@ -8,8 +8,6 @@ jQuery(function ($) {
 
 	map.user = null;
 	map.home = null;
-	map.markers = [];
-	map.user_markers = {};
 
 	navigator.geolocation.getCurrentPosition(function (position) {
 		map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
@@ -43,15 +41,23 @@ function replaceHomeMarker() {
 
 	unsetHomeMarker();
 
-	map.home = new google.maps.Marker({
+	var marker = map.home = new google.maps.Marker({
 		position: location,
 		map: map,
 		icon: '/static/img/home.png'
 	});
+
+	var infoWindow = new google.maps.InfoWindow({
+		content: '<button data-api="unset-location" class="btn">unset my location</button>'
+	});
+
+	google.maps.event.addListener(marker, 'click', function() {
+		infoWindow.open(map, marker);
+	});
 }
 
-jQuery(function ($) {
-	var socket = window.socket = io.connect(location.protocol + '//' + location.host + '/'),
+jQuery(function () {
+	var socket = window.socket,
 		map = window.map;
 
 	socket.emit('ready');
@@ -106,7 +112,6 @@ jQuery(function ($) {
 						});
 					});
 
-
 					return datums;
 				}
 			}
@@ -139,7 +144,7 @@ jQuery(function ($) {
 		socket.emit('location:set', map.user);
 	});
 
-	$("#unset-location").on('click', function () {
+	$body.on('click', '[data-api=unset-location]', function () {
 		unsetHomeMarker();
 
 		socket.emit('location:unset');
@@ -157,7 +162,7 @@ jQuery(function ($) {
 		}, 3000);
 	}
 
-	$("#first-name, #type")
+	$(".changeable")
 		.on('change', function () {
 			if (this.checkValidity()) {
 				var kwargs = {},

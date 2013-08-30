@@ -34,10 +34,18 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <!--<script src="/static/lib/bootstrap/dist/js/bootstrap.min.js"></script>-->
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-<script src="/static/js/main.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/holder/2.0/holder.min.js"></script>
+<script src="/static/lib/swig.min.js"></script>
+<script src="/static/js/main.js"></script>
 
 <!-- PAGE JS -->
+<script src="//maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_KEY }}&sensor=false"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/static/js/socket.js"></script>
+<script src="/nohm/validations.js"></script>
+{% if user %}
+<script>var user = window.user = {{ user.values()|json|safe }};</script>
+{% endif %}
 {% block js %}{% endblock %}
 </body>
 <!--

@@ -5,6 +5,9 @@
 			<h4 class="modal-title">Select images</h4>
 		</div>
 		<div class="modal-body">
+			{% if error %}
+			<h4>{{ error }}</h4>
+			{% endif %}
 			{% for image in images %}
 			<div class="media" style="display: inline-block;">
 				<a href="javascript://" data-id="{{ image.id }}" data-extension="{{ image.extension }}">

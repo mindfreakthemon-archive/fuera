@@ -15,32 +15,21 @@ jQuery(function ($) {
 	map.user_markers = {};
 });
 
-function clearUserMarkers() {
+function eraseUserMarker(user_id) {
 	var map = window.map;
 
-	map.markers.forEach(function (marker) {
-		marker.setMap(null);
-	});
-
-	map.markers = [];
-	map.user_markers = {};
-}
-
-function eraseUserMarker(user) {
-	var map = window.map;
-
-	if (user.username in map.user_markers) {
-		var old_marker = map.user_markers[user.username];
+	if (user_id in map.user_markers) {
+		var old_marker = map.user_markers[user_id];
 
 		map.markers.splice(map.markers.indexOf(old_marker), 1);
-		delete map.user_markers[user.username];
+		delete map.user_markers[user_id];
 
 		old_marker.setMap(null);
 	}
 }
 
 function addUserMarker(user) {
-	eraseUserMarker(user);
+	eraseUserMarker(user.id);
 
 	var map = window.map,
 		location = new google.maps.LatLng(user.lat, user.lng);
@@ -48,23 +37,20 @@ function addUserMarker(user) {
 	var marker = new google.maps.Marker({
 		position: location,
 		map: map,
-		icon: '/static/img/' + user.type + '.png',
-		title: user.username
+		icon: '/static/img/' + (user.id == window.user.id ? 'home' : user.type) + '.png',
+		title: formatMarkerTitle(user, location)
 	});
 
 	var infoWindow = new google.maps.InfoWindow({
-		content: '<div class="media">' +
+		content: '<div class="text-center" style="padding: 5px;">' +
 			(user.selfie ?
-			'<a class="pull-left">' +
-			'<img class="media-object" src="' + user.selfie + '">' +
+			'<a href="/account/user/' + user.username + '">' +
+			'<img class="img-thumbnail" src="' + user.selfie + '/">' +
 			'</a>' : '') +
-			'<div class="media-body">' +
-			'<h4 class="media-heading">' +
-			(user.first_name ?
-				user.first_name + ' (' + user.username + ')' :
-				user.username) + '</h4>' +
-			'<p><a href="http://imgur.com/user/' + user.username + '" target="_blank">Imgur gallery profile</a></p>' +
-			'</div>' +
+
+			'<a href="/account/user/' + user.username + '/">' +
+			'<h4>' + user.username + '</h4>' +
+			'</a>' +
 			'</div>'
 	});
 
@@ -73,11 +59,41 @@ function addUserMarker(user) {
 	});
 
 	map.markers.push(marker);
-	map.user_markers[user.username] = marker;
+	map.user_markers[user.id] = marker;
 }
 
-jQuery(function ($) {
-	var socket = window.socket = io.connect(location.protocol + '//' + location.host + '/'),
+function formatMarkerTitle(user, location) {
+	var current_user_location = new google.maps.LatLng(window.user.lat, window.user.lng);
+
+	return user.username +
+		(window.user.id === user.id ?
+			' (you)' :
+			', ' + Math.round(distance(location, current_user_location)) +
+			(window.user.unit_sys == 'METRIC' ? ' km' : ' mi') +
+			' away from you');
+}
+
+function distance(X, Y) {
+	// Earth radius
+	var Rkm = 6371,
+		Rmi = 3958.76,
+		R = window.user.unit_sys == 'METRIC' ? Rkm : Rmi;
+
+	var radian = Math.PI / 180;
+
+	var dLat = (Y.lat() - X.lat()) * radian / 2,
+		dLon = (Y.lng() - X.lng()) * radian / 2;
+
+	var a = Math.sin(dLat) * Math.sin(dLat) +
+		Math.cos(X.lat() * radian) * Math.cos(Y.lat() * radian) *
+			Math.sin(dLon) * Math.sin(dLon);
+
+	// distance in R units
+	return 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * R;
+}
+
+jQuery(function () {
+	var socket = window.socket,
 		map = window.map;
 
 	// someone changed something
@@ -90,8 +106,9 @@ jQuery(function ($) {
 		}
 	});
 
+	// someone has unset his/her location
 	socket.on('map:erase', function (user) {
-		eraseUserMarker(user);
+		eraseUserMarker(user.id);
 	});
 });
 
@@ -153,9 +170,21 @@ jQuery(function ($) {
 			lat_hi: ne.lat(),
 			lng_hi: ne.lng()
 		}, function (data) {
-			clearUserMarkers();
+			var ids = Object.keys(map.user_markers);
 
-			data.users.forEach(addUserMarker);
+			data.users.forEach(function (user) {
+				// if it's not on the map already
+				if (!(user.id in map.user_markers)) {
+					// add marker
+					addUserMarker(user);
+				}
+
+				// remove from ids
+				ids.splice(ids.indexOf(user.id), 1);
+			});
+
+			// erase the rest
+			ids.forEach(eraseUserMarker);
 		});
 	}
 

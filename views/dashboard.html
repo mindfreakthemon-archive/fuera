@@ -3,8 +3,7 @@
 {% block content %}
 <div id="map-canvas" data-lat="{{ user.p('lat') }}" data-lng="{{ user.p('lng') }}"></div>
 <div id="geodecode-div" class="well">
-	{% set coords = user.p('coords') %}
-	{% if !coords %}
+	{% if !user.p('coords') %}
 	<h5>Looks like you haven't setup your profile yet!</h5>
 	<a href="/account/profile/" class="btn btn-default">Setup profile</a><br /><br />
 	{% endif %}
@@ -18,8 +17,6 @@
 {% endblock %}
 
 {% block js %}
-<script src="//maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_KEY }}&sensor=false"></script>
 <script src="/static/lib/typeahead.js/typeahead.min.js"></script>
-<script src="/socket.io/socket.io.js"></script>
 <script src="/static/js/dashboard.js"></script>
 {% endblock %}

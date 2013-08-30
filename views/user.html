@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+	<div class="page-header">
+		<h2>
+			{% if user.selfie() %}
+			<img src="{{ user.selfie() }}" class="img-thumbnail img-responsive" />
+			{% else %}
+			<img data-src="holder.js/90x90" class="img-thumbnail img-responsive" />
+			{% endif %}
+
+			{% if person.p('first_name') %}
+				{{ person.p('first_name') }}
+				<small>{{ person.p('username') }}</small>
+			{% else %}
+				{{ person.p('username') }}
+			{% endif %}
+		</h2>
+	</div>
+	<div class="row">
+		<div class="col-xs-3">
+		</div>
+		<div class="col-xs-9">
+			<h3>Location</h3>
+			<hr />
+			<img src="http://maps.googleapis.com/maps/api/staticmap?center={{ person.p('lat') }}+{{ person.p('lng') }}&zoom=13&size=600x300&maptype=roadmap&markers=color:black%7Clabel:X%7C{{ person.p('lat') }},{{ person.p('lng') }}&sensor=false" />
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="/static/lib/jquery.editable.min.js"></script>
+<script src="/static/js/user.js"></script>
+{% endblock %}

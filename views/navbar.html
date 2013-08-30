@@ -12,7 +12,7 @@
 		<div class="navbar-collapse collapse navbar-responsive-collapse">
 			<ul class="nav navbar-nav navbar-puffy pull-right">
 				{% if user.isAuthenticated %}
-				<li><p class="navbar-text">Hello, <a href="/account/profile/" class="navbar-link">{{ user.p('username') }}</a>!</p></li>
+				<li><p class="navbar-text">Hello, <a href="/account/user/" class="navbar-link">{{ user.p('username') }}</a>!</p></li>
 				<li><button data-href="/dashboard/" class="btn btn-default navbar-btn">Map</button></li>
 				<li><button data-href="/account/profile/" class="btn btn-default navbar-btn">Profile</button></li>
 				<!--<li><button data-href="/account/erase/" class="btn btn-default navbar-btn">Erase me</button></li>-->

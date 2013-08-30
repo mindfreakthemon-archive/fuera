@@ -26,6 +26,12 @@
 #geodecode-div .form-group {
   margin: 0;
 }
+#profile-geodecode {
+  position: relative;
+}
+#profile-geodecode #geodecode-div {
+  top: 20px;
+}
 #map-profile {
   height: 400px;
 }

@@ -14,8 +14,22 @@ exports.logout = function (req, res) {
 };
 
 exports.erase = function (req, res) {
-	req.user.remove(function (err) {
-		exports.logout(req, res);
+	exports.logout(req, res);
+	req.user.remove();
+};
+
+exports.user = function (req, res, next) {
+	var username = req.param('username') || req.user.p('username');
+
+	models.User.findAndLoad({
+		username: username
+	}, function (error, users) {
+		if (error == 'not found') {
+			next();
+			return;
+		}
+
+		res.render('user', { person: users[0] });
 	});
 };
 
@@ -26,10 +40,35 @@ exports.selfie = function (req, res) {
 				return;
 			}
 
+			function respond(error, response, body) {
+				var images = [];
+
+				if (!error) {
+					body.data.forEach(function (val) {
+						if (val.nsfw) {
+							return;
+						}
+
+						var thumb = val.link.split('.');
+						thumb[thumb.length - 2] += 's';
+						val.extension = thumb[thumb.length - 1];
+						val.thumb = thumb.join('.');
+
+						images.push(val);
+					});
+				}
+
+				res.render('selfie', { images: images, error: error });
+			}
+
 			req.clearTimeout();
 
-			// @TODO redo this shit
 			providerUser.refreshAccessToken(function (error) {
+				if (error) {
+					respond(error);
+					return;
+				}
+
 				request.get({
 					url: 'https://api.imgur.com/3/account/me/images/',
 					headers: {
@@ -37,32 +76,14 @@ exports.selfie = function (req, res) {
 					},
 					timeout: 10000,
 					json: true
-				}, function (error, response, body) {
-					var images = [];
-
-					if (!error) {
-						body.data.forEach(function (val) {
-							if (val.nsfw) {
-								return;
-							}
-
-							var thumb = val.link.split('.');
-							thumb[thumb.length - 2] += 's';
-							val.extension = thumb[thumb.length - 1];
-							val.thumb = thumb.join('.');
-
-							images.push(val);
-						});
-					}
-
-					res.render('selfie', { images: images });
-				});
+				}, respond);
 			});
 		});
 	});
 };
 
 app.all('/account/*', mw.hard.user);
+app.get('/account/user/:username?', exports.user);
 app.get('/account/profile', exports.profile);
 app.get('/account/selfie', exports.selfie);
 app.get('/account/logout', exports.logout);

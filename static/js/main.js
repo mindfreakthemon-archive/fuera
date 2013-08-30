@@ -9,5 +9,5 @@ jQuery(function ($) {
 		var $this = $(this);
 
 		$this.val($this.data('value'));
-	})
+	});
 });
