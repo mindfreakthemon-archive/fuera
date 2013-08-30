@@ -29,7 +29,7 @@ exports.user = function (req, res, next) {
 			return;
 		}
 
-		res.render('user', { person: users[0] });
+		res.render('user', { person: users[0], title: 'Fuera - ' + username });
 	});
 };
 

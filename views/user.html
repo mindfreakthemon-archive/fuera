@@ -29,14 +29,14 @@
 				<div class="form-group">
 					<label class="col-xs-4 control-label">A boy or a girl?</label>
 					<div class="col-xs-8">
-						<p class="form-control-static">{{ user.type() }}</p>
+						<p class="form-control-static">{{ person.type() }}</p>
 					</div>
 				</div>
-				{% if user.p('useless') %}
+				{% if person.p('useless') %}
 				<div class="form-group">
 					<label class="col-xs-4 control-label">About</label>
 					<div class="col-xs-8">
-						<p class="form-control-static">{{ user.p('useless') }}</p>
+						<p class="form-control-static">{{ person.p('useless') }}</p>
 					</div>
 				</div>
 				{% endif %}
