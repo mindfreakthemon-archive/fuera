@@ -4,87 +4,82 @@
 <div class="container">
 	<div class="row">
 		<div class="col-xs-12">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title"><b>{{ user.p('username') }}</b></h3>
-				</div>
-				<div class="panel-body">
-					<div class="row">
-						<div class="col-xs-3 text-center" id="selfie" style="margin-top: 50px;">
+			<h3>Profile</h3>
+			<hr />
+			<div class="form-horizontal">
+				<div class="form-group">
+					<div class="col-xs-12">
+						<div class="text-center" id="selfie">
 							{% if user.selfie() %}
-							<img src="{{ user.selfie() }}" class="img-thumbnail img-responsive" />
+								<img src="{{ user.selfie() }}" class="img-thumbnail img-responsive" />
 							{% else %}
-							<img data-src="holder.js/90x90" class="img-thumbnail img-responsive" />
+								<img data-src="holder.js/90x90" class="img-thumbnail img-responsive" />
 							{% endif %}
 							<p>
 								<a href="/account/selfie/" data-toggle="modal" data-target="#images">select from imgur images</a>
 							</p>
 						</div>
-						<div class="col-xs-9">
-							<h3>Profile</h3>
-							<hr />
-							<form class="form-horizontal">
-								<div class="form-group">
-									<label class="col-xs-4 control-label" for="first-name">Let's begin with your name</label>
-									<div class="col-xs-8">
-										<input type="text" class="form-control changeable" id="first-name" name="first_name" maxlength="20" placeholder="Anonymous" value="{{ user.p('first_name') }}" />
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="col-xs-4 control-label">Are you a boy or a girl?</label>
-									<div class="col-xs-8">
-										<select class="form-control changeable" name="type" data-value="{{ user.p('type') }}">
-											<option value="unknown">Unknown</option>
-											<option value="guy">Boy</option>
-											<option value="gal">Girl</option>
-										</select>
-									</div>
-								</div>
-							</form>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-4 control-label" for="first-name">Let's begin with your name</label>
+					<div class="col-xs-8">
+						<input type="text" class="form-control changeable" id="first-name" name="first_name" maxlength="20" placeholder="Anonymous" value="{{ user.p('first_name') }}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-4 control-label">Are you a boy or a girl?</label>
+					<div class="col-xs-8">
+						<select class="form-control changeable" name="type" data-value="{{ user.p('type') }}">
+							<option value="unknown">Unknown</option>
+							<option value="guy">Boy</option>
+							<option value="gal">Girl</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-4 control-label">Describe yourself</label>
+					<div class="col-xs-8">
+						<textarea class="form-control changeable" name="useless">{{ user.p('useless') }}</textarea>
+					</div>
+				</div>
+			</div>
 
-							<h3>Settings</h3>
-							<hr />
-							<form class="form-horizontal">
-								<div class="form-group">
-									<label class="col-xs-4 control-label">Unit system</label>
-									<div class="col-xs-8">
-										<select class="form-control changeable" name="unit_sys" data-value="{{ user.p('unit_sys') }}">
-											<option value="METRIC">Metric</option>
-											<option value="IMPERIAL">Imperial</option>
-										</select>
-										<p class="help-block">All distance measurements will be displayed in selected unit system.</p>
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="col-xs-4 control-label">Notification radius</label>
-									<div class="col-xs-8">
-										<input type="number" class="form-control changeable" name="notify_radius" min="0" max="10000" value="{{ user.p('notify_radius') }}" />
-										<p class="help-block">Radius in selected units in which you will be alerted if any new user will appear.</p>
-									</div>
-								</div>
-							</form>
+			<h3>Location</h3>
+			<hr />
+			<div class="alert alert-info">
+				<b>Hint!</b> To set your location click anywhere on the map. Use search field to find your location on the map. Click on the marker to unset your location.
+			</div>
+			<div id="profile-geodecode">
+				<div id="map-profile"></div>
+				<div id="geodecode-div" class="well">
+					<div class="form-horizontal">
+						<div class="form-group">
+							<h5>Search for location</h5>
+							<input type="text" class="form-control" id="location-search" />
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h3 class="panel-title">Location</h3>
-				</div>
-				<div class="panel-body">
-					<div class="alert alert-info">
-						<b>Hint!</b> To set your location click anywhere on the map. Use search field to find your location on the map. Click on the marker to unset your location.
+
+			<h3>Settings</h3>
+			<hr />
+			<div class="form-horizontal">
+				<div class="form-group">
+					<label class="col-xs-4 control-label">Unit system</label>
+					<div class="col-xs-8">
+						<select class="form-control changeable" name="unit_sys" data-value="{{ user.p('unit_sys') }}">
+							<option value="METRIC">Metric</option>
+							<option value="IMPERIAL">Imperial</option>
+						</select>
+						<p class="help-block">All distance measurements will be displayed in selected unit system.</p>
 					</div>
-					<div id="profile-geodecode">
-						<div id="map-profile"></div>
-						<div id="geodecode-div" class="well">
-							<div class="form-horizontal">
-								<div class="form-group">
-									<h5>Search for location</h5>
-									<input type="text" class="form-control" id="location-search" />
-								</div>
-							</div>
-						</div>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-4 control-label">Notification radius</label>
+					<div class="col-xs-8">
+						<input type="number" class="form-control changeable" name="notify_radius" min="0" max="10000" value="{{ user.p('notify_radius') }}" />
+						<p class="help-block">Radius in selected units in which you will be alerted if any new user will appear.</p>
 					</div>
 				</div>
 			</div>

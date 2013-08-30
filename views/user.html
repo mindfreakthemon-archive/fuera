@@ -3,11 +3,10 @@
 {% block content %}
 <div class="container">
 	<div class="page-header">
+		<div class="pull-right"><img src="/static/img/oak.sm.jpg" title="I'm watching you.." /></div>
 		<h2>
-			{% if user.selfie() %}
-			<img src="{{ user.selfie() }}" class="img-thumbnail img-responsive" />
-			{% else %}
-			<img data-src="holder.js/90x90" class="img-thumbnail img-responsive" />
+			{% if person.selfie() %}
+				<img src="{{ person.selfie() }}" class="img-thumbnail img-responsive" />
 			{% endif %}
 
 			{% if person.p('first_name') %}
@@ -20,11 +19,34 @@
 	</div>
 	<div class="row">
 		<div class="col-xs-3">
+			<a href="http://imgur.com/user/{{ person.p('username') }}" target="_blank" class="btn btn-default btn-block">Imgur gallery profile</a>
+			<button class="btn btn-default btn-block" disabled>Send a message</button>
 		</div>
 		<div class="col-xs-9">
-			<h3>Location</h3>
+			<h3>Profile</h3>
 			<hr />
-			<img src="http://maps.googleapis.com/maps/api/staticmap?center={{ person.p('lat') }}+{{ person.p('lng') }}&zoom=13&size=600x300&maptype=roadmap&markers=color:black%7Clabel:X%7C{{ person.p('lat') }},{{ person.p('lng') }}&sensor=false" />
+			<div class="form-horizontal">
+				<div class="form-group">
+					<label class="col-xs-4 control-label">A boy or a girl?</label>
+					<div class="col-xs-8">
+						<p class="form-control-static">{{ user.type() }}</p>
+					</div>
+				</div>
+				{% if user.p('useless') %}
+				<div class="form-group">
+					<label class="col-xs-4 control-label">About</label>
+					<div class="col-xs-8">
+						<p class="form-control-static">{{ user.p('useless') }}</p>
+					</div>
+				</div>
+				{% endif %}
+			</div>
+
+			{% if person.p('coords') %}
+				<h3>Location</h3>
+				<hr />
+				<img src="http://maps.googleapis.com/maps/api/staticmap?center={{ person.p('lat') }}+{{ person.p('lng') }}&zoom=13&size=600x300&maptype=roadmap&markers=color:black%7Clabel:X%7C{{ person.p('lat') }},{{ person.p('lng') }}&sensor=false" />
+			{% endif %}
 		</div>
 	</div>
 </div>

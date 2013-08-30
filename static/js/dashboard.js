@@ -42,7 +42,7 @@ function addUserMarker(user) {
 	});
 
 	var infoWindow = new google.maps.InfoWindow({
-		content: '<div class="text-center" style="padding: 5px;">' +
+		content: '<div class="text-center">' +
 			(user.selfie ?
 			'<a href="/account/user/' + user.username + '">' +
 			'<img class="img-thumbnail" src="' + user.selfie + '/">' +
