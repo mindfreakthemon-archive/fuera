@@ -32,36 +32,30 @@ exports.feedback_message = function (req, res) {
 		return;
 	}
 
-	req.user.providers(function (error, providerUsers) {
-		providerUsers.forEach(function (providerUser) {
-			if (providerUser.p('name') !== 'imgur') {
+	req.user.providers(function (error, providerUser) {
+		req.clearTimeout();
+
+		providerUser.refreshAccessToken(function (error) {
+			if (error) {
+				respond(error);
 				return;
 			}
 
-			req.clearTimeout();
-
-			providerUser.refreshAccessToken(function (error) {
-				if (error) {
-					respond(error);
-					return;
-				}
-
-				request.post({
-					url: 'https://api.imgur.com/3/message',
-					headers: {
-						'Authorization': 'Bearer ' + providerUser.p('accessToken')
-					},
-					form: {
-						recipient: 'mindfreakthemon',
-						subject: subject,
-						body: body
-					},
-					timeout: 10000,
-					json: true
-				}, respond);
-			});
+			request.post({
+				url: 'https://api.imgur.com/3/message',
+				headers: {
+					'Authorization': 'Bearer ' + providerUser.p('accessToken')
+				},
+				form: {
+					recipient: 'mindfreakthemon',
+					subject: subject,
+					body: body
+				},
+				timeout: 10000,
+				json: true
+			}, respond);
 		});
-	});
+	}, 'imgur');
 
 
 };

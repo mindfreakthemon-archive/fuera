@@ -190,7 +190,7 @@ jQuery(function ($) {
 
 			socket.emit('profile:save', { selfie: id + ':' + extension  }, function () {
 				$images.modal('hide');
-				$selfie.attr('src', 'http://i.imgur.com/' + id + 't.' + extension);
+				$selfie.attr('src', 'http://i.imgur.com/' + id + 's.' + extension);
 			});
 		});
 });
