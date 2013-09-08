@@ -1,0 +1,42 @@
+html,
+body {
+  height: 1px;
+}
+body {
+  padding: 50px 0;
+}
+#dashboard {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+#map-canvas {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+}
+#geodecode-div {
+  position: absolute;
+  top: 20px;
+  z-index: 2;
+  padding: 10px 20px;
+  max-width: 300px;
+  margin: 0 80px;
+}
+#geodecode-div .form-group {
+  margin: 0;
+}
+#foobar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  margin: 0;
+}
+#navbar {
+  margin: 0;
+}

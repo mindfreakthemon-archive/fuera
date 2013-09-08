@@ -1,48 +1,32 @@
 @import "../lib/bootstrap/less/variables";
 @import "../lib/bootstrap/less/mixins";
 
+html, body {
+	min-height: 100%;
+}
+
+body {
+	padding: 80px 0;
+}
+
+//////////////////
+
+.navbar-nav > li > a {
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
 
 .navbar-puffy li + li {
 	margin-left: 10px;
 }
 
 @media screen and (max-width: 768px) {
-	.navbar-puffy button {
+	.navbar-puffy a {
 		width: 100%;
 	}
 
 	.navbar-text {
 		text-align: center;
-	}
-}
-
-
-////// Dashboard
-
-#map-canvas {
-	position: absolute;
-	top: 50px;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	z-index: -1;
-}
-
-#geodecode-div {
-	padding: 10px 20px;
-	max-width: 300px;
-	margin: 0 80px;
-	position: absolute;
-
-	.form-group {
-		margin: 0;
-	}
-}
-
-#profile-geodecode {
-	position: relative;
-	#geodecode-div {
-		top: 20px;
 	}
 }
 

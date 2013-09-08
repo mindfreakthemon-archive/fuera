@@ -87,69 +87,50 @@ app.io.route('ready', function (req) {
 	req.io.join(req.handshake.user.id);
 });
 
-app.io.route('location', {
-	get: function (req) {
-		var user = req.handshake.user;
-
-		if (user.p('coords')) {
-			req.io.respond({
-				lng: user.p('lng'),
-				lat: user.p('lat')
-			});
-		} else {
-			req.io.respond(null);
-		}
-	},
-	set: function (req) {
-		var user = req.handshake.user;
-
-		user.p({
-			lat: req.data.lat,
-			lng: req.data.lng,
-			coords: true
-		});
-
-		user.save(function (err) {
-			req.io.respond({
-				error: err
-			});
-
-			req.io.room(user.id).broadcast('location:set', req.data);
-			req.io.broadcast('map:update', user.values());
-		});
-	},
-	unset: function (req) {
-		var user = req.handshake.user;
-
-		user.p({
-			lng: 0,
-			lat: 0,
-			coords: false
-		});
-
-		user.save(function (err) {
-			req.io.respond({
-				error: err
-			});
-
-			req.io.room(user.id).broadcast('location:unset');
-			req.io.broadcast('map:erase', { username: user.username });
-		});
-	}
-});
-
-
 app.io.route('profile', {
 	save: function (req) {
-		var user = req.handshake.user;
+		var user = req.handshake.user,
+			changes = Object.keys(req.data);
 
 		user.p(req.data);
 
+		// handle notify changes
+		if (~changes.indexOf('lat') ||
+			~changes.indexOf('lng') ||
+			~changes.indexOf('coords') ||
+			~changes.indexOf('notify_radius')) {
+			var R = 6371,
+				notify_update = {},
+				degree = (user.p('notify_radius') / R) * (180 / Math.PI);
+
+			notify_update.notify_lat_hi = user.p('lat') + degree;
+			notify_update.notify_lat_lo = user.p('lat') - degree;
+
+			notify_update.notify_lng_hi = user.p('lng') + degree;
+			notify_update.notify_lng_lo = user.p('lng') - degree;
+
+			user.p(notify_update);
+		}
+
 		user.save(function (err) {
+			var profile = user.values();
+
+			req.io.broadcast('map:update', profile);
+			app.io.room(user.id).broadcast('profile:change', {
+				profile: profile,
+				changes: changes
+			});
+
+			// send signal to other windows
+			if (~changes.indexOf('lat') ||
+				~changes.indexOf('lng') ||
+				~changes.indexOf('coords')) {
+				app.io.room(user.id).broadcast('location:change');
+			}
+
 			req.io.respond({
 				error: err
 			});
-			req.io.broadcast('map:update', user.values());
 		});
 	}
 });

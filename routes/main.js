@@ -7,6 +7,11 @@ exports.index = function (req, res) {
 	res.render('index',{ title: 'Fuera' });
 };
 
+exports.about = function (req, res) {
+	res.render('about', { title: 'Fuera - About' });
+};
+
+
 exports.privacy = function (req, res) {
 	res.render('privacy', { title: 'Fuera - Privacy policy' });
 };
@@ -56,11 +61,10 @@ exports.feedback_message = function (req, res) {
 			}, respond);
 		});
 	}, 'imgur');
-
-
 };
 
 app.get('/', mw.soft.anon, exports.index);
+app.get('/about', exports.about);
 app.get('/privacy', exports.privacy);
 app.get('/terms', exports.terms);
 app.get('/feedback', exports.feedback);

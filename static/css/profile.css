@@ -1,0 +1,14 @@
+#geodecode-div {
+  position: absolute;
+  top: 20px;
+  z-index: 2;
+  padding: 10px 20px;
+  max-width: 300px;
+  margin: 0 80px;
+}
+#geodecode-div .form-group {
+  margin: 0;
+}
+#profile-geodecode {
+  position: relative;
+}

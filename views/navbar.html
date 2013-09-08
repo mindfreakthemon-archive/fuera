@@ -1,4 +1,4 @@
-<div class="navbar navbar-default">
+<div id="navbar" class="navbar navbar-default navbar-fixed-top">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
@@ -13,13 +13,11 @@
 			<ul class="nav navbar-nav navbar-puffy pull-right">
 				{% if user.isAuthenticated %}
 				<li><p class="navbar-text">Hello, <a href="/account/user/" class="navbar-link">{{ user.p('username') }}</a>!</p></li>
-				<li><button data-href="/dashboard/" class="btn btn-default navbar-btn">Map</button></li>
-				<li><button data-href="/account/profile/" class="btn btn-default navbar-btn">Profile</button></li>
-				<li><button data-href="/feedback/" class="btn btn-default navbar-btn">Leave a feedback</button></li>
-				<!--<li><button data-href="/account/erase/" class="btn btn-default navbar-btn">Erase me</button></li>-->
-				<li><button data-href="/account/logout/" class="btn btn-default navbar-btn">Log out</button></li>
+				<li><a href="/dashboard/" class="btn btn-default navbar-btn">Map</a></li>
+				<li><a href="/account/profile/" class="btn btn-default navbar-btn">Profile</a></li>
+				<li><a href="/account/logout/" class="btn btn-default navbar-btn">Log out</a></li>
 				{% else %}
-				<li><button data-href="/auth/imgur/" class="btn btn-default navbar-btn">Sign in with imgur.com</button></li>
+				<li><a href="/auth/imgur/" class="btn btn-default navbar-btn">Sign in with imgur.com</a></li>
 				{% endif %}
 			</ul>
 		</div>
