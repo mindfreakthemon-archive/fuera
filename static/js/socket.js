@@ -3,7 +3,6 @@ jQuery(function () {
 		user = window.user;
 
 	socket.on('connect', function() {
-		console.log('launched connect')
 		socket.emit('ready');
 	});
 
