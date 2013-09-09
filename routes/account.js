@@ -14,8 +14,19 @@ exports.logout = function (req, res) {
 };
 
 exports.erase = function (req, res) {
-	exports.logout(req, res);
-	req.user.remove();
+	req.user.providers(function (error, providers) {
+		if (providers) {
+			providers.forEach(function (provider) {
+				provider.remove();
+			});
+		}
+
+		app.io.broadcast('map:erase', req.user.values());
+
+		req.user.remove(function () {
+			exports.logout(req, res);
+		});
+	});
 };
 
 exports.user = function (req, res, next) {
